@@ -15,11 +15,11 @@
 
     <header class="bg-white shadow-sm sticky top-0 z-50 py-6 px-4">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-2xl font-bold text-gray-900 mb-2">KATALOG DIGITAL</h1>
-            <p class="text-sm text-gray-500 mb-4">Cari berdasarkan Nama Barang atau Kode SKU secara instan</p>
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">CATALOG DIGITAL PANCARAN GROUP </h1>
+            <p class="text-sm text-gray-500 mb-4">Cari berdasarkan Nama Barang atau Kode Search Key/SKU secara instan</p>
             
             <div class="relative max-w-xl mx-auto">
-                <input type="text" id="searchInput" oninput="searchProduct()" placeholder="Ketik nama barang atau SKU di sini..." 
+                <input type="text" id="searchInput" oninput="searchProduct()" placeholder="Ketik nama barang atau Search Key SKU di sini..." 
                     class="w-full pl-5 pr-12 py-3 border-2 border-gray-300 rounded-full shadow-inner focus:outline-none focus:border-blue-500 text-lg transition">
                 <span class="absolute right-4 top-3.5 text-gray-400">🔍</span>
             </div>
@@ -54,7 +54,9 @@
                 allProducts = rows.map(row => ({
                     nama: row.c[0] ? row.c[0].v : '',
                     sku: row.c[1] ? row.c[1].v : '',
-                    foto: row.c[2] ? row.c[2].v : 'https://via.placeholder.com/150?text=No+Image'
+                    foto: (row.c[2] && row.c[2].v) ? 
+                          (row.c[2].v.includes('id=') ? `http://googleusercontent.com/profile/picture/7{row.c[2].v.split('id=')[1].split('&')[0]}` : row.c[2].v) : 
+                          'https://via.placeholder.com/150?text=No+Image'
                 }));
 
                 // Inisialisasi Fuse.js untuk pencarian pintar (fuzzy search)
