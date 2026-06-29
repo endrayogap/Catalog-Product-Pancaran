@@ -19,7 +19,7 @@
             <p class="text-sm text-gray-500 mb-4">Cari berdasarkan Nama Barang atau Kode Search Key/SKU secara instan</p>
             
             <div class="relative max-w-xl mx-auto">
-                <input type="text" id="searchInput" oninput="searchProduct()" placeholder="Ketik nama barang atau Search Key SKU di sini..." 
+                <input type="text" id="searchInput" oninput="searchProduct()" placeholder="Ketik nama barang atau Search Key / SKU di sini..." 
                     class="w-full pl-5 pr-12 py-3 border-2 border-gray-300 rounded-full shadow-inner focus:outline-none focus:border-blue-500 text-lg transition">
                 <span class="absolute right-4 top-3.5 text-gray-400">🔍</span>
             </div>
@@ -50,15 +50,28 @@
                 const json = JSON.parse(data.substr(47).slice(0, -2));
                 const rows = json.table.rows;
                 
-                // Mapping data tabel ke Array JavaScript
-                allProducts = rows.map(row => ({
-                    nama: row.c[0] ? row.c[0].v : '',
-                    sku: row.c[1] ? row.c[1].v : '',
-                    foto: (row.c[2] && row.c[2].v) ? 
-                          (row.c[2].v.includes('id=') ? `http://googleusercontent.com/profile/picture/7{row.c[2].v.split('id=')[1].split('&')[0]}` : row.c[2].v) : 
-                          'https://via.placeholder.com/150?text=No+Image'
-                }));
+                // Memfilter baris judul/header terlebih dahulu, kemudian melakukan mapping data tabel ke Array JavaScript
+allProducts = rows
+  .filter(row => row.c[0] && row.c[0].v !== 'nama') // baris ini otomatis membuang baris "nama" & "sku"
+  .map(row => {
+    // Mengambil ID unik foto dari tautan Google Drive
+    let driveId = '';
+    if (row.c[2] && row.c[2].v) {
+        const rawUrl = row.c[2].v;
+        if (rawUrl.includes('id=')) {
+            driveId = rawUrl.split('id=')[1].split('&')[0];
+        } else if (rawUrl.includes('/d/')) {
+            driveId = rawUrl.split('/d/')[1].split('/')[0];
+        }
+    }
 
+    return {
+        nama: row.c[0] ? row.c[0].v : '',
+        sku: row.c[1] ? row.c[1].v : '',
+        // Menggunakan domain HTTPS dan sub-domain LH3 resmi milik Google untuk gambar
+        foto: driveId ? `https://lh3.googleusercontent.com/d/${driveId}` : 'https://via.placeholder.com/150?text=No+Image'
+    };
+  });
                 // Inisialisasi Fuse.js untuk pencarian pintar (fuzzy search)
                 fuse = new Fuse(allProducts, {
                     keys: ['nama', 'sku'],
