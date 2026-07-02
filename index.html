@@ -118,7 +118,7 @@ allProducts = rows
             
             if (!query.trim()) {
                 document.getElementById('statusText').innerText = `${allProducts.length} Produk siap dicari.`;
-                displayProducts(allProducts.slice(0, 50)); // jika kosong, balikkan ke 50 pertama
+                displayProducts(allProducts.slice(0, 10)); // jika kosong, balikkan ke 50 pertama
                 return;
             }
 
