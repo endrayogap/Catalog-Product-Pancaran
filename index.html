@@ -79,7 +79,7 @@ allProducts = rows
                 });
 
                 document.getElementById('statusText').innerText = `${allProducts.length} Produk siap dicari.`;
-                displayProducts(allProducts.slice(0, 50)); // Tampilkan 50 produk pertama dulu agar web ringan
+                displayProducts(allProducts.slice(0, 10)); // Tampilkan 50 produk pertama dulu agar web ringan
             })
             .catch(err => {
                 document.getElementById('statusText').innerText = "Gagal memuat database. Periksa ID Google Sheets Anda.";
